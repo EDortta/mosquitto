@@ -1,0 +1,27 @@
+version: '3'
+services:
+  mos2:
+    image: eclipse-mosquitto
+    container_name: mos2
+    ports:
+        - '1883:1883'
+        - '9001:9001'
+    volumes:
+        - './shared:/mosquitto/'
+        - './shared/log:/mosquitto/log'
+        - './shared/data:/mosquitto/data'
+    networks:
+        - pernilongo
+
+  # php82:
+  #   build:
+  #     dockerfile: Dockerfile-php
+  #     context: .
+  #   container_name: php82
+  #   ports:
+  #     - '8000:8000'
+  #   volumes:
+  #     - './app:/var/www/html'
+
+networks:
+  pernilongo:
