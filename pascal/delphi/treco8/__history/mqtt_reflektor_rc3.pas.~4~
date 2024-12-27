@@ -1,0 +1,254 @@
+unit mqtt_reflektor_rc3;
+
+interface
+
+uses
+  Classes,
+  SysUtils,
+  Mosquitto, System.JSON;
+
+type
+
+  TMessageID = ansistring;
+
+  TOnMessageReceivedEvent = function(messageId: TMessageID; sender, target, subject, action: ansistring; payload: TJSONObject): TJSONObject of object;
+  TOnIdleEvent = procedure of object;
+
+  TMqttClient = class
+  private
+    mq: Pmosquitto;
+    major, minor, revision: cint;
+    MQTT_HOST: pchar;
+    MQTT_PORT: cint;
+    MQTT_USERNAME: pchar;
+    MQTT_PASSWORD: pchar;
+    MQTT_TOPIC: pchar;
+    MQTT_MYSELF: ansistring;
+    FOnMessageReceived: TOnMessageReceivedEvent;
+    FOnIdle: TOnIdleEvent;
+
+    function EncodeMessage(sender, target, subject, action: string; payload: TJSONObject): TJSONObject;
+    function DecodeMessage(msg: ansistring): TJSONData;
+
+    procedure log(const msg: pchar);
+
+    procedure on_log(mosq: Pmosquitto; obj: pointer; level: cint; const str: pchar);
+    procedure on_message(mosq: Pmosquitto; obj: pointer; const message: Pmosquitto_message);
+
+  public
+    constructor Create;
+
+    function connect(host: pchar; port: cint; username, password, topic: pchar; clientId: ansistring): boolean;
+    function postMessage(target, subject, action: string; payload: TJSONObject): TMessageID;
+
+    property OnMessageReceived: TOnMessageReceivedEvent read FOnMessageReceived write FOnMessageReceived;
+    property OnIdle: TOnIdleEvent read FOnIdle write FOnIdle;
+
+    destructor Destroy; override;
+    procedure Run;
+  end;
+
+
+var
+  mqttClient: TMqttClient;
+
+implementation
+
+var
+  major, minor, revision: cint;
+  mq: Pmosquitto;
+
+function TMqttClient.EncodeMessage(sender, target, subject, action: string; payload: TJSONObject): TJSONObject;
+var
+  messageId: TGuid;
+begin
+  CreateGUID(messageId);
+  Result := TJSONObject.Create;
+  Result.Add('messageId', GUIDToString(messageId));
+  Result.Add('sender', sender);
+  Result.Add('target', target);
+  Result.Add('subject', subject);
+  Result.Add('action', action);
+  Result.Add('payload', payload);
+end;
+
+function TMqttClient.DecodeMessage(msg: ansistring): TJSONData;
+var
+  auxJSONData: TJSONData;
+  target, sender: ansistring;
+begin
+  Result := nil;
+  auxJSONData := GetJSON(msg);
+  try
+    sender := TJSONObject(auxJSONData).Get('sender', '');
+    if (sender <> self.MQTT_MYSELF) then
+    begin
+      target := TJSONObject(auxJSONData).Get('target', '');
+      if ('*' = target) or (target = MQTT_MYSELF) then
+      begin
+        Result := auxJSONData;
+      end;
+    end;
+  finally
+    if (Result = nil) then
+      auxJSONData.Free;
+  end;
+end;
+
+
+procedure mqtt_on_log(mosq: Pmosquitto; obj: pointer; level: cint; const str: pchar); cdecl;
+begin
+  mqttClient.on_log(mosq, obj, level, str);
+end;
+
+procedure mqtt_on_message(mosq: Pmosquitto; obj: pointer; const message: Pmosquitto_message); cdecl;
+begin
+  mqttClient.on_message(mosq, obj, message);
+end;
+
+
+constructor TMqttClient.Create;
+begin
+  inherited create();
+  if mosquitto_lib_init <> MOSQ_ERR_SUCCESS then
+  begin
+    writeln('Failed.');
+    halt(1);
+  end;
+end;
+
+function TMqttClient.connect(host: pchar; port: cint; username, password, topic: pchar; clientId: ansistring): boolean;
+begin
+  MQTT_HOST := host;
+  MQTT_PORT := port;
+  MQTT_USERNAME := username;
+  MQTT_PASSWORD := password;
+  MQTT_TOPIC := topic;
+  MQTT_MYSELF := clientId;
+
+
+  mosquitto_lib_version(@major, @minor, @revision);
+
+  writeln('Running against libmosquitto ', major, '.', minor, '.', revision);
+
+  mq := mosquitto_new(nil, true, nil);
+  if Assigned(mq) then begin
+    mosquitto_log_callback_set(mq, @mqtt_on_log);
+    mosquitto_message_callback_set(mq, @mqtt_on_message);
+
+    mosquitto_username_pw_set(mq, MQTT_USERNAME, MQTT_PASSWORD);
+
+    mosquitto_connect(mq, MQTT_HOST, MQTT_PORT, 60);
+    mosquitto_subscribe(mq, nil, MQTT_TOPIC, 1);
+    Result:=true;
+  end else begin
+    writeln('ERROR: Cannot create a mosquitto instance.');
+    Result:=false;
+  end;
+end;
+
+function TMqttClient.postMessage(target, subject, action: string; payload: TJSONObject): TMessageID;
+var
+  JSONData: TJSONData;
+  msg: ansistring;
+begin
+  JSONData := EncodeMessage(MQTT_MYSELF, target, subject, action, payload);
+  msg := JSONData.AsJSON;
+  Result := TJSONObject(JSONData).Get('messageId', '');
+  mosquitto_publish(mq, nil, MQTT_TOPIC, Length(msg), PChar(msg), 1, False);
+end;
+
+procedure TMqttClient.log(const msg: pchar);
+var
+  LogFile: TextFile;
+  LogFilePath: string;
+begin
+  LogFilePath := 'logs/log.txt';
+  ForceDirectories(ExtractFilePath(LogFilePath));
+  AssignFile(LogFile, LogFilePath);
+  try
+    Append(LogFile);
+  except
+    Rewrite(LogFile);
+  end;
+
+  try
+    Writeln(LogFile, msg);
+  finally
+    CloseFile(LogFile);
+  end;
+end;
+
+procedure TMqttClient.on_log(mosq: Pmosquitto; obj: pointer; level: cint; const str: pchar);
+begin
+  log(str);
+end;
+
+procedure TMqttClient.on_message(mosq: Pmosquitto; obj: pointer; const message: Pmosquitto_message);
+var
+  JSONData: TJSONData;
+  JSONObj: TJSONObject;
+  msg: ansistring;
+begin
+  msg := '';
+  with message^ do
+  begin
+    SetLength(msg, payloadlen);
+    Move(payload^, msg[1], payloadlen);
+    writeln('Topic: [', topic, '] - Message: [', msg, ']');
+    JSONData := DecodeMessage(msg);
+    if (JSONData <> nil) then
+    begin
+      try
+        if JSONData is TJSONObject then
+        begin
+          if (Assigned(FOnMessageReceived)) then
+            JSONObj:=FOnMessageReceived(
+              TJSONObject(JSONData).Get('messageId', ''),
+              TJSONObject(JSONData).Get('sender', ''),
+              TJSONObject(JSONData).Get('target', ''),
+              TJSONObject(JSONData).Get('subject', ''),
+              TJSONObject(JSONData).Get('action', ''),
+              TJSONObject(JSONData).Get('payload', TJSONObject.Create)
+            );
+          writeln('  Message: ', TJSONObject(JSONData).Get('msg', ''));
+          writeln('  Date: ', TJSONObject(JSONData).Get('date', ''));
+        //   JSONObj := EncodeMessage(
+        //     MQTT_MYSELF,
+        //     TJSONObject(JSONData).Get('sender', ''),
+        //     TJSONObject(JSONData).Get('action', 'answer'),
+        //     TJSONObject.Create(
+        //       ['Inteiro', Random(1000), 'String', 'Conjunto de letras', 'Float', Random(1000) / 100]
+        //     )
+        //   );
+        //   msg := JSONObj.AsJSON;
+        //   mosquitto_publish(mosq, nil, MQTT_TOPIC, Length(msg), PChar(msg), 1, False);
+        end;
+      finally
+        JSONData.Free;
+      end;
+    end;
+  end;
+end;
+
+destructor TMqttClient.Destroy;
+begin
+  if Assigned(mq) then begin
+    mosquitto_disconnect(mq);
+    mosquitto_destroy(mq);
+  end;
+  mosquitto_lib_cleanup;
+  inherited;
+end;
+
+procedure TMqttClient.Run;
+begin
+  while mosquitto_loop(mq, 100, 1) = MOSQ_ERR_SUCCESS do begin
+    if (Assigned(FOnIdle)) then
+      FOnIdle;
+  end;
+end;
+
+begin
+  mqttClient := TMqttClient.Create;
+end.

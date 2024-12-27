@@ -1,0 +1,14 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<BorlandProject>
+	<Transactions>
+    <Transaction>2023/09/20 16:15:06.000.417,=C:\Users\Esteban\Documents\Embarcadero\Studio\Projects\Unit1.pas</Transaction>
+    <Transaction>2023/11/08 07:42:01.000.588,=C:\Users\Esteban\Documents\Embarcadero\Studio\Projects\Unit1.pas</Transaction>
+    <Transaction>2023/11/08 07:47:54.000.103,Z:\Queues\mosquitto\pascal\delphi\treco12-rc3-service\uService.pas=C:\Users\Esteban\Documents\Embarcadero\Studio\Projects\Unit1.pas</Transaction>
+    <Transaction>2023/11/08 07:47:54.000.103,Z:\Queues\mosquitto\pascal\delphi\treco12-rc3-service\uService.dfm=C:\Users\Esteban\Documents\Embarcadero\Studio\Projects\Unit1.dfm</Transaction>
+    <Transaction>2023/11/08 07:48:35.000.291,Z:\Queues\mosquitto\pascal\delphi\treco12-rc3-service\reflektorServiceRC3.dproj=C:\Users\Esteban\Documents\Embarcadero\Studio\Projects\Project1.dproj</Transaction>
+    <Transaction>2023/11/08 07:50:19.000.823,=Z:\Queues\mosquitto\pascal\delphi\treco12-rc3-service\mqtt_reflektor_rc6.pas</Transaction>
+    <Transaction>2023/11/08 07:50:19.000.791,=Z:\Queues\mosquitto\pascal\delphi\treco12-rc3-service\MosquittoLoader.pas</Transaction>
+    <Transaction>2023/11/08 07:50:19.000.745,=Z:\Queues\mosquitto\pascal\delphi\treco12-rc3-service\mosquitto.pas</Transaction>
+    <Transaction>2023/11/08 07:50:19.000.885,=Z:\Queues\mosquitto\pascal\delphi\treco12-rc3-service\uQueueReflektor.pas</Transaction>
+  </Transactions>
+</BorlandProject>

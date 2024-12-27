@@ -1,0 +1,48 @@
+﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+    <PropertyGroup>
+        <ProjectGuid>{FDCBFDD2-02E1-4357-9A50-ADFB8558DC6E}</ProjectGuid>
+    </PropertyGroup>
+    <ItemGroup>
+        <Projects Include="service.dproj">
+            <Dependencies/>
+        </Projects>
+        <Projects Include="PureAPIService.dproj">
+            <Dependencies/>
+        </Projects>
+    </ItemGroup>
+    <ProjectExtensions>
+        <Borland.Personality>Default.Personality.12</Borland.Personality>
+        <Borland.ProjectType/>
+        <BorlandProject>
+            <Default.Personality/>
+        </BorlandProject>
+    </ProjectExtensions>
+    <Target Name="service">
+        <MSBuild Projects="service.dproj"/>
+    </Target>
+    <Target Name="service:Clean">
+        <MSBuild Projects="service.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="service:Make">
+        <MSBuild Projects="service.dproj" Targets="Make"/>
+    </Target>
+    <Target Name="PureAPIService">
+        <MSBuild Projects="PureAPIService.dproj"/>
+    </Target>
+    <Target Name="PureAPIService:Clean">
+        <MSBuild Projects="PureAPIService.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="PureAPIService:Make">
+        <MSBuild Projects="PureAPIService.dproj" Targets="Make"/>
+    </Target>
+    <Target Name="Build">
+        <CallTarget Targets="service;PureAPIService"/>
+    </Target>
+    <Target Name="Clean">
+        <CallTarget Targets="service:Clean;PureAPIService:Clean"/>
+    </Target>
+    <Target Name="Make">
+        <CallTarget Targets="service:Make;PureAPIService:Make"/>
+    </Target>
+    <Import Project="$(BDS)\Bin\CodeGear.Group.Targets" Condition="Exists('$(BDS)\Bin\CodeGear.Group.Targets')"/>
+</Project>

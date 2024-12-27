@@ -1,0 +1,9 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<BorlandProject>
+	<Transactions>
+    <Transaction>2023/10/18 19:13:18.000.934,=C:\Users\Esteban\Documents\Embarcadero\Studio\Projects\Unit1.pas</Transaction>
+    <Transaction>2023/10/18 19:16:29.000.842,C:\Users\Esteban\Documents\Embarcadero\Studio\Projects\Unit1.pas=Z:\Queues\mosquitto\pascal\delphi\treco11-rc2\Unit1.pas</Transaction>
+    <Transaction>2023/10/18 19:16:29.000.842,C:\Users\Esteban\Documents\Embarcadero\Studio\Projects\Unit1.dfm=Z:\Queues\mosquitto\pascal\delphi\treco11-rc2\Unit1.dfm</Transaction>
+    <Transaction>2023/10/18 19:16:34.000.049,C:\Users\Esteban\Documents\Embarcadero\Studio\Projects\Project1.dproj=Z:\Queues\mosquitto\pascal\delphi\treco11-rc2\Project1.dproj</Transaction>
+  </Transactions>
+</BorlandProject>

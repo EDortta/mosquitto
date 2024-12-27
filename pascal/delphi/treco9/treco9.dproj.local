@@ -1,0 +1,9 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<BorlandProject>
+	<Transactions>
+    <Transaction>2023/09/20 16:15:06.000.417,=C:\Users\Esteban\Documents\Embarcadero\Studio\Projects\Unit1.pas</Transaction>
+    <Transaction>2023/10/06 14:21:36.000.836,C:\Users\Esteban\Documents\Embarcadero\Studio\Projects\Project1.dproj=Z:\Queues\mosquitto\pascal\delphi\treco9\treco9.dproj</Transaction>
+    <Transaction>2023/10/06 16:30:43.000.263,=Z:\Queues\mosquitto\pascal\delphi\treco9\New1.ini</Transaction>
+    <Transaction>2023/10/06 16:30:59.000.324,Z:\Queues\mosquitto\pascal\delphi\treco9\New1.ini=Z:\Queues\mosquitto\pascal\delphi\treco9\Win32\Debug\kalyvre.ini</Transaction>
+  </Transactions>
+</BorlandProject>

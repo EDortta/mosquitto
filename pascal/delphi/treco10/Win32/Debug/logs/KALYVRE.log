@@ -1,0 +1,8 @@
+[2023-11-01 06:19:32] ----------------------------------------------
+[2023-11-01 06:19:32] Connecting to 192.168.18.14 repl/karazawa
+[2023-11-01 06:19:32] Subscribing to repl/karazawa
+[2023-11-01 06:19:32] Running Flag Z:\Queues\mosquitto\pascal\delphi\treco10\Win32\Debug\flags\KALYVRE.flag
+[2023-11-01 06:19:32] Broadcasting "replication:hello" on repl/karazawa
+[2023-11-01 06:19:32] payload: {"messageId":"{D812E2B8-A6DE-4CAF-BE9A-1350C6D69B91}","sender":"KALYVRE","target":"*","subject":"replication","action":"hello","payload":{"Mensagem":"Oi mundo!","Inteiro":"628","String":"Conjunto de letras","Flotante":"1.1"}}
+[2023-11-01 06:19:32] Length: 225
+[2023-11-01 06:19:32] publish_ret:4

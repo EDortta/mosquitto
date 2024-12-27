@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<BorlandProject>
+	<Transactions>
+    <Transaction>2023/09/20 16:15:06.000.417,=C:\Users\Esteban\Documents\Embarcadero\Studio\Projects\Unit1.pas</Transaction>
+    <Transaction>2023/10/10 12:13:58.000.942,=C:\Users\Esteban\Documents\Embarcadero\Studio\Projects\Unit1.pas</Transaction>
+    <Transaction>2023/10/10 12:14:21.000.839,C:\Users\Esteban\Documents\Embarcadero\Studio\Projects\Unit1.pas=Z:\Queues\mosquitto\pascal\delphi\treco10\uTreco10.pas</Transaction>
+    <Transaction>2023/10/10 12:14:21.000.839,C:\Users\Esteban\Documents\Embarcadero\Studio\Projects\Unit1.dfm=Z:\Queues\mosquitto\pascal\delphi\treco10\uTreco10.dfm</Transaction>
+    <Transaction>2023/10/10 12:14:27.000.482,C:\Users\Esteban\Documents\Embarcadero\Studio\Projects\Project1.dproj=Z:\Queues\mosquitto\pascal\delphi\treco10\treco10.dproj</Transaction>
+    <Transaction>2023/10/10 12:46:18.000.003,=Z:\Queues\mosquitto\pascal\delphi\treco10\Unit2.pas</Transaction>
+    <Transaction>2023/10/10 12:53:04.000.068,Z:\Queues\mosquitto\pascal\delphi\treco10\Unit2.pas=Z:\Queues\mosquitto\pascal\delphi\treco10\uConfig.pas</Transaction>
+    <Transaction>2023/10/10 12:53:04.000.068,Z:\Queues\mosquitto\pascal\delphi\treco10\Unit2.dfm=Z:\Queues\mosquitto\pascal\delphi\treco10\uConfig.dfm</Transaction>
+  </Transactions>
+</BorlandProject>
